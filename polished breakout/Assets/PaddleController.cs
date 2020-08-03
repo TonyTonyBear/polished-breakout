@@ -9,12 +9,13 @@ namespace PolishedBreakout
     public class PaddleController : MonoBehaviour
     {
         private CollisionState currentCollisionState;
-        private BoxCollider2D boxCollider;
+        private BoxCollider2D _boxCollider;
+        public BoxCollider2D boxCollider { get { return _boxCollider; } }
 
         private void OnEnable()
         {
             currentCollisionState = CollisionState.NONE;
-            boxCollider = GetComponent<BoxCollider2D>();
+            _boxCollider = GetComponent<BoxCollider2D>();
         }
 
         void Update()
@@ -51,7 +52,7 @@ namespace PolishedBreakout
                     Vector3 updatedPosition = transform.position;
                     updatedPosition.x = wall.transform.position.x -
                                         wall.boxCollider.bounds.extents.x -
-                                        boxCollider.bounds.extents.x;
+                                        _boxCollider.bounds.extents.x;
 
                     transform.position = updatedPosition;
                 }
@@ -63,7 +64,7 @@ namespace PolishedBreakout
 
                     updatedPosition.x = wall.transform.position.x +
                                         wall.boxCollider.bounds.extents.x +
-                                        boxCollider.bounds.extents.x;
+                                        _boxCollider.bounds.extents.x;
 
                     transform.position = updatedPosition;
                 }
