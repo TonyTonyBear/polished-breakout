@@ -53,7 +53,10 @@ namespace PolishedBreakout
 
             if (wall != null)
             {
-                velocity.y *= -1f;
+                if (wall.wallType == WallType.HORIZONTAL)
+                    velocity.x *= -1f;
+                else if (wall.wallType == WallType.VERTICAL)
+                    velocity.y *= -1f;
             }
         }
     }
