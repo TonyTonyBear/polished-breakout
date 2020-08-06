@@ -38,7 +38,7 @@ namespace PolishedBreakout
 
         }
 
-        private void OnTriggerEnter2D(Collider2D collision)
+        private void OnCollisionEnter2D(Collision2D collision)
         {
             WallCollision wall = collision.gameObject.GetComponent<WallCollision>();
 
@@ -71,7 +71,7 @@ namespace PolishedBreakout
             }
         }
 
-        private void OnTriggerExit2D(Collider2D collision)
+        private void OnCollisionExit2D(Collision2D collision)
         {
             if (collision.gameObject.GetComponent<WallCollision>() != null)
             {

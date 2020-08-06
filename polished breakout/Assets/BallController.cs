@@ -7,6 +7,7 @@ namespace PolishedBreakout
     public class BallController : MonoBehaviour
     {
         private Vector3 velocity;
+        [SerializeField] private float speed = 5f;
 
         private void OnEnable()
         {
@@ -15,13 +16,21 @@ namespace PolishedBreakout
 
         private void Update()
         {
-            transform.position += velocity * Time.deltaTime;
+            transform.position += velocity * Time.deltaTime * speed;
         }
 
-        private void OnTriggerEnter2D(Collider2D collision)
+        private void OnCollisionEnter2D(Collision2D collision)
         {
-            PaddleController paddle = collision.GetComponent<PaddleController>();
-            WallCollision wall = collision.GetComponent<WallCollision>();
+            PaddleController paddle = collision.gameObject.GetComponent<PaddleController>();
+            WallCollision wall = collision.gameObject.GetComponent<WallCollision>();
+            BrickCollision brick = collision.gameObject.GetComponent<BrickCollision>();
+
+            if (brick != null)
+            {
+                velocity = Vector3.Reflect(velocity, collision.contacts[0].normal);
+                brick.HandleCollision();
+                return;
+            }
 
             if (paddle != null)
             {
@@ -49,6 +58,8 @@ namespace PolishedBreakout
                     velocity = angle * velocity;
                     velocity.Normalize();
                 }
+
+                return;
             }
 
             if (wall != null)
@@ -57,6 +68,8 @@ namespace PolishedBreakout
                     velocity.x *= -1f;
                 else if (wall.wallType == WallType.VERTICAL)
                     velocity.y *= -1f;
+
+                return;
             }
         }
     }
