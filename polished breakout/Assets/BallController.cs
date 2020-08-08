@@ -8,6 +8,8 @@ namespace PolishedBreakout
     {
         private Vector3 velocity;
         [SerializeField] private float speed = 5f;
+        [SerializeField] private Transform paddleTransform;
+        private bool gameStarted = false;
 
         private void OnEnable()
         {
@@ -16,7 +18,20 @@ namespace PolishedBreakout
 
         private void Update()
         {
-            transform.position += velocity * Time.deltaTime * speed;
+            if (!gameStarted)
+            {
+                Vector3 updatedPosition = transform.position;
+                updatedPosition.x = paddleTransform.position.x;
+                transform.position = updatedPosition;
+            }
+            else
+                transform.position += velocity * Time.deltaTime * speed;
+
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                gameStarted = true;
+            }
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
