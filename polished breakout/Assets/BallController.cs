@@ -103,19 +103,13 @@ namespace PolishedBreakout
             Vector3 targetScale = scaleOrigin;
             targetScale.x /= 2f;
 
-            while (timer < duration)
-            {
-                t = timer / duration;
-                transform.localScale = Vector3.Lerp(scaleOrigin, targetScale, t);
-                timer += Time.deltaTime;
-                yield return null;
-            }
+            transform.localScale = targetScale;
 
-            while (timer >= 0)
+            while (timer <= duration)
             {
                 t = timer / duration;
-                transform.localScale = Vector3.Lerp(scaleOrigin, targetScale, t);
-                timer -= Time.deltaTime;
+                transform.localScale = Vector3.Lerp(targetScale, scaleOrigin, t);
+                timer += Time.deltaTime;
                 yield return null;
             }
 
