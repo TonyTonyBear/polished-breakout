@@ -11,6 +11,7 @@ namespace PolishedBreakout
         [SerializeField] private Transform paddleTransform;
         private bool gameStarted = false;
         private SpriteRenderer spriteRenderer;
+        [SerializeField] private CameraShake camShake;
 
         private void OnEnable()
         {
@@ -91,6 +92,8 @@ namespace PolishedBreakout
                     velocity.x *= -1f;
                 else if (wall.wallType == WallType.VERTICAL)
                     velocity.y *= -1f;
+
+                StartCoroutine(camShake.Shake(0.125f, 0.2f));
             }
 
             Vector2 contactNormal = collision.contacts[0].normal;
