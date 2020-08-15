@@ -776,7 +776,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorPalettes:
-  - {fileID: 11400000, guid: a6efbe7eb841945f690353d0fdc993af, type: 2}
+  - {fileID: 11400000, guid: 0ca3baefd933d426fb550143120c6ae0, type: 2}
+  - {fileID: 11400000, guid: fbab9d42d86c645ad84cd3c7b639fda3, type: 2}
+  - {fileID: 11400000, guid: a20e12b7ab27c4961922e92760f30dbc, type: 2}
   ball: {fileID: 596014379}
   paddle: {fileID: 1165495526}
   background: {fileID: 394852910}

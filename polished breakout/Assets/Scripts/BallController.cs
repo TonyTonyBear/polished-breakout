@@ -10,11 +10,16 @@ namespace PolishedBreakout
         [SerializeField] private float speed = 5f;
         [SerializeField] private Transform paddleTransform;
         private bool gameStarted = false;
+        private SpriteRenderer spriteRenderer;
 
         private void OnEnable()
         {
             velocity = Vector3.down;
             scaleOrigin = transform.localScale;
+            spriteRenderer = GetComponent<SpriteRenderer>();
+
+            if (spriteRenderer == null)
+                Debug.LogError("A spriteRenderer is supposed to be attached to BallController, but it could not be found.");
         }
 
         private void Update()
@@ -92,6 +97,7 @@ namespace PolishedBreakout
 
             transform.rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(contactNormal.y, contactNormal.x) * Mathf.Rad2Deg);
             StartCoroutine(SquashAnim());
+            StartCoroutine(HitFlash());
         }
 
         private IEnumerator SquashAnim()
@@ -114,6 +120,33 @@ namespace PolishedBreakout
             }
 
             transform.localScale = scaleOrigin;
+        }
+
+        private IEnumerator HitFlash()
+        {
+            float duration = 0.125f;
+            float timer = 0f;
+            float t;
+
+            Color colorOrigin = spriteRenderer.color;
+
+            while (timer <= duration)
+            {
+                t = timer / duration;
+                spriteRenderer.color = Color.Lerp(colorOrigin, Color.white, t);
+                timer += Time.deltaTime;
+                yield return null;
+            }
+
+            while (timer >= 0)
+            {
+                t = timer / duration;
+                spriteRenderer.color = Color.Lerp(colorOrigin, Color.white, t);
+                timer -= Time.deltaTime;
+                yield return null;
+            }
+
+            spriteRenderer.color = colorOrigin;
         }
     }
 }
