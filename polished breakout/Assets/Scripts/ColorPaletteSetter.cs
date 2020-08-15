@@ -12,6 +12,33 @@ public class ColorPaletteSetter : MonoBehaviour
 
     private void OnEnable()
     {
+        SetPalette();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            currentPaletteIndex--;
+
+            if (currentPaletteIndex < 0)
+                currentPaletteIndex = colorPalettes.Count - 1;
+
+            SetPalette();
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            currentPaletteIndex++;
+
+            if (currentPaletteIndex >= colorPalettes.Count)
+                currentPaletteIndex = 0;
+
+            SetPalette();
+        }
+    }
+
+    private void SetPalette()
+    {
         ColorPalette currentPalette = colorPalettes[currentPaletteIndex];
 
         ball.color = currentPalette.ball;
