@@ -12,6 +12,7 @@ namespace PolishedBreakout
         private bool gameStarted = false;
         private SpriteRenderer spriteRenderer;
         [SerializeField] private CameraShake camShake;
+        [SerializeField] private AudioClip brickSFX, wallSFX;
 
         private void OnEnable()
         {
@@ -56,6 +57,7 @@ namespace PolishedBreakout
             {
                 velocity = Vector3.Reflect(velocity, collision.contacts[0].normal);
                 brick.HandleCollision();
+                AudioManager.Instance.PlayOneShot(brickSFX, true);
             }
 
             if (paddle != null)
@@ -84,6 +86,8 @@ namespace PolishedBreakout
                     velocity = angle * velocity;
                     velocity.Normalize();
                 }
+
+                AudioManager.Instance.PlayOneShot(wallSFX, true);
             }
 
             if (wall != null)
@@ -94,6 +98,7 @@ namespace PolishedBreakout
                     velocity.y *= -1f;
 
                 StartCoroutine(camShake.Shake(0.125f, 0.2f));
+                AudioManager.Instance.PlayOneShot(wallSFX, true);
             }
 
             Vector2 contactNormal = collision.contacts[0].normal;
