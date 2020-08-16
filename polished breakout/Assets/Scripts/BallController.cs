@@ -6,14 +6,22 @@ namespace PolishedBreakout
 {
     public class BallController : MonoBehaviour
     {
-        private Vector3 velocity;
+        private Vector3 velocity, scaleOrigin;
         [SerializeField] private float speed = 5f;
         [SerializeField] private Transform paddleTransform;
         private bool gameStarted = false;
+        private SpriteRenderer spriteRenderer;
+        [SerializeField] private CameraShake camShake;
+        [SerializeField] private AudioClip brickSFX, wallSFX;
 
         private void OnEnable()
         {
             velocity = Vector3.down;
+            scaleOrigin = transform.localScale;
+            spriteRenderer = GetComponent<SpriteRenderer>();
+
+            if (spriteRenderer == null)
+                Debug.LogError("A spriteRenderer is supposed to be attached to BallController, but it could not be found.");
         }
 
         private void Update()
@@ -32,6 +40,11 @@ namespace PolishedBreakout
             {
                 gameStarted = true;
             }
+
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                StartCoroutine(SquashAnim());
+            }
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
@@ -44,7 +57,8 @@ namespace PolishedBreakout
             {
                 velocity = Vector3.Reflect(velocity, collision.contacts[0].normal);
                 brick.HandleCollision();
-                return;
+                AudioManager.Instance.PlayOneShot(brickSFX, true);
+                ParticleManager.Instance.PlayParticlesAtPosition(collision.contacts[0].point);
             }
 
             if (paddle != null)
@@ -74,7 +88,7 @@ namespace PolishedBreakout
                     velocity.Normalize();
                 }
 
-                return;
+                AudioManager.Instance.PlayOneShot(wallSFX, true);
             }
 
             if (wall != null)
@@ -84,8 +98,64 @@ namespace PolishedBreakout
                 else if (wall.wallType == WallType.VERTICAL)
                     velocity.y *= -1f;
 
-                return;
+                StartCoroutine(camShake.Shake(0.125f, 0.2f));
+                AudioManager.Instance.PlayOneShot(wallSFX, true);
             }
+
+            Vector2 contactNormal = collision.contacts[0].normal;
+
+            transform.rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(contactNormal.y, contactNormal.x) * Mathf.Rad2Deg);
+            StartCoroutine(SquashAnim());
+            StartCoroutine(HitFlash());
+        }
+
+        private IEnumerator SquashAnim()
+        {
+            float duration = 0.125f;
+            float timer = 0f;
+            float t;
+
+            Vector3 targetScale = scaleOrigin;
+            targetScale.x /= 2f;
+
+            transform.localScale = targetScale;
+
+            while (timer <= duration)
+            {
+                t = timer / duration;
+                transform.localScale = Vector3.Lerp(targetScale, scaleOrigin, t);
+                timer += Time.deltaTime;
+                yield return null;
+            }
+
+            transform.localScale = scaleOrigin;
+        }
+
+        private IEnumerator HitFlash()
+        {
+            float duration = 0.125f;
+            float timer = 0f;
+            float t;
+
+            Color colorOrigin = spriteRenderer.color;
+
+            while (timer <= duration)
+            {
+                t = timer / duration;
+                spriteRenderer.color = Color.Lerp(colorOrigin, Color.white, t);
+                timer += Time.deltaTime;
+                yield return null;
+            }
+
+            while (timer >= 0)
+            {
+                t = timer / duration;
+                spriteRenderer.color = Color.Lerp(colorOrigin, Color.white, t);
+                timer -= Time.deltaTime;
+                yield return null;
+            }
+
+            spriteRenderer.color = colorOrigin;
         }
     }
 }
