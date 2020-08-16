@@ -47,3 +47,6 @@ TagManager:
   - name: Playable Environment
     uniqueID: 2954967877
     locked: 0
+  - name: VFX
+    uniqueID: 3899094449
+    locked: 0

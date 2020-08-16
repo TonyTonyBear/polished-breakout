@@ -58,6 +58,7 @@ namespace PolishedBreakout
                 velocity = Vector3.Reflect(velocity, collision.contacts[0].normal);
                 brick.HandleCollision();
                 AudioManager.Instance.PlayOneShot(brickSFX, true);
+                ParticleManager.Instance.PlayParticlesAtPosition(collision.contacts[0].point);
             }
 
             if (paddle != null)
